@@ -29,9 +29,8 @@ class MoveAnimation : public Animation {
 
     //calculate position from current time
     Cell move() {
-      //short p = 1 + floor(timing() / stepTime);
-      //return Cell(cellFrom.x() + p * dx, cellFrom.y() + p * dy);
-      short p = floor(timing() / stepTime + .5); // half stepTime in constructor weg
+      short p = floor(timing() / stepTime) + 1;
+      //short p = floor(timing() / stepTime + .5);
       return Cell(cellFrom.x() + p * dx, cellFrom.y() + p * dy);
     }
 
@@ -46,13 +45,14 @@ class MoveAnimation : public Animation {
       dx = (dx > 0) - (dx < 0);
       dy = (dy > 0) - (dy < 0);
       animationColor = color0;
+      animationStart = millis();
     }
 
     //animate function
     void animate() override {
-      //leds[cellFrom.xy] = Color(0x000000);
       leds[cellTo.xy] = Color(0x000000);
-      if (!(move() == cellFrom))
+      writeLeds();
+      //if (!(move() == cellFrom))
         leds[move().xy] = animationColor;
     }
 };
@@ -304,7 +304,7 @@ class Amazons : public Game {
         case selectMoveTo:
           if (moveTo(pressed)) {
             if (state == selectShoot) { //made a valid move
-              animator.startAnimation(new MoveAnimation(currentCell, pressed, activeColor(), 90), true);
+              animator.startAnimation(new MoveAnimation(currentCell, pressed, activeColor(), 64), true);
               setAnimations();
             } else //undone selection
               setAnimations();
@@ -315,7 +315,7 @@ class Amazons : public Game {
           if (shootCell(pressed)) //made a valid shot
             if (hasLegalMove()) {//continue to opponent
               setAnimations();
-              animator.startAnimation(new MoveAnimation(currentCell, pressed, fireColor, 30), true);
+              animator.startAnimation(new MoveAnimation(currentCell, pressed, fireColor, 32), true);
             } else { //game over
               state = gameOver;
               onePieceAnimation.finish();
@@ -336,7 +336,6 @@ void setup() {
   initializeBoard();
   game = new Amazons();
   game->gameSetup();
-  game->animator.startAnimation(new MoveAnimation(Cell(0, 0), Cell(7, 7), Color(0xff0000), 1000), true);
 }
 
 /* Check for button presses and update animations. */

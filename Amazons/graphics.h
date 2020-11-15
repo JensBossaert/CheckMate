@@ -88,7 +88,7 @@ void writeLeds() {
 class Animation {
   public:
     //internal data
-    Time animationStart;
+    Time animationStart; // = millis();
     Time animationDuration = 0;
     Color animationColor = Color(0x000000);
 

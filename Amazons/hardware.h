@@ -1,6 +1,21 @@
+// ——————————————————————————————————————————————————————————————————
+
+/* TIME TYPE */
 typedef unsigned long Time;
 
-/* CELL "CLASS" */
+/* STACK IMPLEMENTATION */
+#include "stack.h"
+
+/* PAIR IMPLEMENTATION */
+template<typename A, typename B>
+struct Pair {
+  A first;
+  B second;
+};
+
+// ——————————————————————————————————————————————————————————————————
+
+/* CELL CLASS */
 
 class Cell {
   public:
@@ -107,17 +122,5 @@ void detectButtons() {
     }
   }
 }
-
-// ——————————————————————————————————————————————————————————————————
-
-/* STACK IMPLEMENTATION */
-#include "stack.h"
-
-/* PAIR IMPLEMENTATION */
-template<typename A, typename B>
-struct Pair {
-  A first;
-  B second;
-};
 
 // ——————————————————————————————————————————————————————————————————
