@@ -23,9 +23,6 @@ class Game {
     ErrorAnimation errorAnimation;
 
     void throwError() {
-      leds[1] = 0xff0000;
-      writeLeds();
-      delay(1000);
       if (errorAnimation.isFinished())
         animator.startAnimation(&errorAnimation);
       else
@@ -47,7 +44,7 @@ void buttonReleased(Cell cell) {
 }
 
 void buttonHeldFor(Cell cell, Time t) {
-  if (t > 4000 && (cell.x() == 0 || cell.x() == 7) && (cell.y() == 0 || cell.y() == 7))
+  if (t > 3000 && (cell.x() == 0 || cell.x() == 7) && (cell.y() == 0 || cell.y() == 7))
     hardreset();
   game->buttonHeldFor(cell, t);
 }

@@ -197,7 +197,7 @@ class StaticOneColorAnimation : public MaskedAnimation {
     //constructor
     StaticOneColorAnimation(Color color0) {
       animationColor = color0;
-      animationStart = millis();
+      //animationStart = millis();
     }
 
     //animate function
@@ -223,7 +223,7 @@ class StaticAnimation : public Animation {
   public:
     //constructor
     StaticAnimation() {
-      animationStart = millis();
+      //animationStart = millis();
     }
 
     void setColor(Color color) override {
@@ -268,7 +268,7 @@ class PulseAnimation : public PeriodicAnimation, public MaskedAnimation {
     //constructors
     PulseAnimation(Color colorA0, Color colorB0, Time period0, uint64_t mask0) :
       MaskedAnimation(mask0), animationColorBis(colorB0) {
-      animationStart = millis();
+      //animationStart = millis();
       animationColor = colorA0;
       period = period0;
     }
@@ -303,7 +303,7 @@ class PulseAnimation : public PeriodicAnimation, public MaskedAnimation {
 class ErrorAnimation : public Animation {
   public:
     ErrorAnimation() {
-      animationStart = millis();
+      //animationStart = millis();
       animationDuration = 1000;
       animationColor = Color(0xff0000);
     }
@@ -333,7 +333,7 @@ class SwirlAnimation : public Animation {
     //constructors
     SwirlAnimation(Color color0, unsigned int animationSpeed0 = 70) :
       animationSpeed(animationSpeed0) {
-      animationStart = millis();
+      //animationStart = millis();
       animationColor = color0;
     }
 
@@ -357,7 +357,7 @@ class AnimationManager {
     Stack<Pair<Animation*, bool>> animationStack;
 
     void startAnimation(Animation* animation, bool shouldDestruct = false) {
-      //animation->animationStart = millis();
+      animation->animationStart = millis();
       animationStack.push({animation, shouldDestruct});
     }
 

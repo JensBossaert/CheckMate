@@ -45,7 +45,7 @@ class MoveAnimation : public Animation {
       dx = (dx > 0) - (dx < 0);
       dy = (dy > 0) - (dy < 0);
       animationColor = color0;
-      animationStart = millis();
+      //animationStart = millis();
     }
 
     //animate function
