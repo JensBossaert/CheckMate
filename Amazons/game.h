@@ -33,7 +33,7 @@ class Game : public ButtonManager, public AnimationManager {
     
     /* Reset the current session. */
     void reset() {
-      //clearAnimations();//todo ???
+      clearAnimations();
       gameSetup();
     }
 

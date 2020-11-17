@@ -18,6 +18,18 @@
 
 /* GAME IMPLEMENTATION*/
 
+//todo: smooth and move to "graphics.h"
+class FadeAnimation : public Animation {
+  public:
+    FadeAnimation() {}
+
+    void animate() override {
+      uint8_t p = min(255, 255 * timing() / 5000);
+      for (int i = 0; i < 64; ++i)
+        leds[i] = leds[i].darker(255-p);
+    }
+};
+
 //todo: fix and move to "graphics.h"
 class MoveAnimation : public Animation {
   private:
@@ -321,9 +333,7 @@ class Amazons : public Game {
               setAnimations();
               startAnimation(new MoveAnimation(currentCell, pressed, fireColor, 32), true);
             } else { //game over
-              state = gameOver;
-              onePieceAnimation.finish();
-              startAnimation(new SwirlAnimation(opposingColor()));
+              declareWinner();
             } else //made an invalid shot
             throwError();
           break;
@@ -331,6 +341,17 @@ class Amazons : public Game {
           break;
       }
     }
+
+    void declareWinner() {
+      state = gameOver;
+      onePieceAnimation.finish();
+      colorBackground();
+      for (int i = 0; i < 64; ++i)
+        leds[i] = leds[i].darker(64);
+      startAnimation(new FadeAnimation(), true);
+      startAnimation(new SwirlAnimation(opposingColor()), true);
+    }
+
 };
 
 // ——————————————————————————————————————————————————————————————————
