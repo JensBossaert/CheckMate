@@ -1,12 +1,15 @@
 // ——————————————————————————————————————————————————————————————————
 
 /* TIME TYPE */
+
 typedef unsigned long Time;
 
 /* STACK CLASS */
+
 #include "stack.h"
 
 /* PAIR CLASS*/
+
 template<typename A, typename B>
 struct Pair {
   A first;
@@ -48,7 +51,7 @@ struct Cell {
 };
 
 //"non-existing" cell (outside the board)
-Cell NullCell = Cell(1 << 7);
+const Cell NullCell = Cell(1 << 7);
 
 // ——————————————————————————————————————————————————————————————————
 

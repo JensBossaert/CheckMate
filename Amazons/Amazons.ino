@@ -254,6 +254,7 @@ class Amazons : public Game {
           startAnimation(&onePieceAnimation);
           break;
         case selectShoot:
+          allPiecesAnimation.finishNow();
           onePieceAnimation.clearMask();
           onePieceAnimation.addCell(activeCell);
           onePieceAnimation.setPeriod(333);
