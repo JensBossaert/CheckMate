@@ -18,6 +18,7 @@
 
 /* GAME IMPLEMENTATION*/
 
+//todo: fix and move to "graphics.h"
 class MoveAnimation : public Animation {
   private:
     //internal data
@@ -41,33 +42,33 @@ class MoveAnimation : public Animation {
       stepTime = stepTime0;
       dx = cellTo.x() - cellFrom.x();
       dy = cellTo.y() - cellFrom.y();
-      animationDuration = stepTime * max(abs(dx), abs(dy));// - .5 * stepTime;
+      animationDuration = stepTime * max(abs(dx), abs(dy)) - .5 * stepTime;
       dx = (dx > 0) - (dx < 0);
       dy = (dy > 0) - (dy < 0);
       animationColor = color0;
-      //animationStart = millis();
     }
 
     //animate function
     void animate() override {
       leds[cellTo.xy] = Color(0x000000);
-      writeLeds();
+      //writeLeds();
       //if (!(move() == cellFrom))
-        leds[move().xy] = animationColor;
+      leds[move().xy] = animationColor;
     }
 };
 
 // ——————————————————————————————————————————————————————————————————
 
-enum CellType {blank, shot, player1, player2};
-enum GameState {selectMoveFrom, selectMoveTo, selectShoot, gameOver};
-
 class Amazons : public Game {
+  private:
+    enum CellType {blank, shot, player1, player2};
+    enum GameState {selectMoveFrom, selectMoveTo, selectShoot, gameOver};
+
   public:
     /* Set up the game definitions. */
     Color player1Color = Color(0x11ff33);
     Color player2Color = Color(0x3311ff);
-    Color fireColor = Color(0xcc3300);
+    Color fireColor = Color(0xcc6600);
 
     /* Define internal data. */
     CellType cellTypes[64];
@@ -103,6 +104,7 @@ class Amazons : public Game {
         cellTypes[player2Pieces[i].xy] = player2;
       }
       //
+      colorBackground();
       setAnimations();
     }
 
@@ -207,7 +209,7 @@ class Amazons : public Game {
     }
 
     /* Game graphic methods. */
-    void colorBackground()  {
+    void colorBackground() override {
       for (int x = 0; x < 8; ++x)
         for (int y = 0; y < 8; ++y) {
           Cell currentCell = Cell(x, y);
@@ -229,10 +231,10 @@ class Amazons : public Game {
 
     void colorMoveHints() {
       if (state == selectMoveTo)
-        //NullCell() is non-existing, forcing to check the whole board
-        canReach(activeCell, NullCell(), activeColor().darker(4));
+        //NullCell is non-existing, forcing to check the whole board
+        canReach(activeCell, NullCell, activeColor().darker(6));
       if (state == selectShoot)
-        canReach(activeCell, NullCell(), Color(0x050200));
+        canReach(activeCell, NullCell, Color(0x050200));
     }
 
     void setAnimations() {
@@ -243,13 +245,13 @@ class Amazons : public Game {
           for (int i = 0; i < 4; ++i)
             if (hasLegalMoveWith(activePieces()[i]))
               allPiecesAnimation.addCell(activePieces()[i]);
-          animator.startAnimation(&allPiecesAnimation);
+          startAnimation(&allPiecesAnimation);
           break;
         case selectMoveTo:
           allPiecesAnimation.finish();
           onePieceAnimation = PulseAnimation(activeColor(), 1000);
           onePieceAnimation.addCell(activeCell);
-          animator.startAnimation(&onePieceAnimation);
+          startAnimation(&onePieceAnimation);
           break;
         case selectShoot:
           onePieceAnimation.clearMask();
@@ -263,9 +265,10 @@ class Amazons : public Game {
 
     /* Game loop. */
     void gameLoop() override {
+      readButtons();
       colorBackground();
       colorMoveHints();
-      animator.animate();
+      animate();
     };
 
     /* Game end checks. */
@@ -304,7 +307,7 @@ class Amazons : public Game {
         case selectMoveTo:
           if (moveTo(pressed)) {
             if (state == selectShoot) { //made a valid move
-              animator.startAnimation(new MoveAnimation(currentCell, pressed, activeColor(), 64), true);
+              startAnimation(new MoveAnimation(currentCell, pressed, activeColor(), 64), true);
               setAnimations();
             } else //undone selection
               setAnimations();
@@ -315,11 +318,11 @@ class Amazons : public Game {
           if (shootCell(pressed)) //made a valid shot
             if (hasLegalMove()) {//continue to opponent
               setAnimations();
-              animator.startAnimation(new MoveAnimation(currentCell, pressed, fireColor, 32), true);
+              startAnimation(new MoveAnimation(currentCell, pressed, fireColor, 32), true);
             } else { //game over
               state = gameOver;
               onePieceAnimation.finish();
-              animator.startAnimation(new SwirlAnimation(opposingColor()));
+              startAnimation(new SwirlAnimation(opposingColor()));
             } else //made an invalid shot
             throwError();
           break;
@@ -333,14 +336,11 @@ class Amazons : public Game {
 
 /* Initialize pins and led strip, and set up a new game. */
 void setup() {
-  initializeBoard();
   game = new Amazons();
   game->gameSetup();
 }
 
 /* Check for button presses and update animations. */
 void loop() {
-  detectButtons();
   game->gameLoop();
-  writeLeds();
 }

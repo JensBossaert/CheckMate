@@ -1,4 +1,3 @@
-// C = Animation*
 template<typename C>
 class Stack {
   private:
